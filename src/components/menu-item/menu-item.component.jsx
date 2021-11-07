@@ -10,7 +10,7 @@ function MenuItem  ({title, imageUrl, size, linkUrl, match}){
     
     return (
     <div  className={`${size} menu-item `} onClick={()=>{
-        console.log(linkUrlgit)
+        console.log(linkUrl)
         navigate(linkUrl)
         }}>
 
