@@ -3,13 +3,16 @@ import './menu-item.styles.scss'
 import { useParams, useNavigate, useLocation, useH } from 'react-router-dom'
 
 
-const MenuItem = ({title, imageUrl, size, linkurl, match})=>{
+function MenuItem  ({title, imageUrl, size, linkUrl, match}){
     let  history  = useParams();
     const navigate = useNavigate()
     const location = useLocation()
-    console.log(history)
+    
     return (
-    <div  className={`${size} menu-item `} onClick={console.log(location)}>
+    <div  className={`${size} menu-item `} onClick={()=>{
+        console.log(linkUrlgit)
+        navigate(linkUrl)
+        }}>
 
         <div className='background-image' style={{backgroundImage:`url(${imageUrl})`}}/>
 
