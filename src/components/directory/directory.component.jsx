@@ -2,7 +2,9 @@ import React from 'react';
 import MenuItem from '../menu-item/menu-item.component';
 import './directory.styles.scss'
 
-
+/**
+ * Since we are going to hold state here we are using class component
+ */
 class Directory extends React.Component{
     constructor(){
         super();

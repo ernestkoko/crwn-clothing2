@@ -1,16 +1,15 @@
 import React from 'react';
 import './menu-item.styles.scss'
-import { useParams, useNavigate, useLocation, useH } from 'react-router-dom'
+import { useParams, useNavigate, useLocation } from 'react-router-dom'
 
 
-function MenuItem  ({title, imageUrl, size, linkUrl, match}){
-    let  history  = useParams();
+function MenuItem  ({title, imageUrl, size, linkUrl}){
+   // let  history  = useParams();
     const navigate = useNavigate()
-    const location = useLocation()
+    //const location = useLocation()
     
     return (
     <div  className={`${size} menu-item `} onClick={()=>{
-        console.log(linkUrl)
         navigate(linkUrl)
         }}>
 
