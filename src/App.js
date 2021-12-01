@@ -6,8 +6,9 @@ import HomePage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component';
 import Header from './components/header/header.component';
 import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
-import { auth } from './firebase/firebase.utils';
+import { auth,createuserProfileDocument } from './firebase/firebase.utils';
 import { onAuthStateChanged } from '@firebase/auth';
+import { onSnapshot } from 'firebase/firestore';
 
 
 
@@ -23,11 +24,36 @@ class App extends React.Component {
   unsubscribeFromAuth=null;
 
   componentDidMount(){
-   this.unsubscribeFromAuth= onAuthStateChanged(auth,(user)=>{
-      this.setState({currentUser: user});
+   this.unsubscribeFromAuth= onAuthStateChanged(auth,async userAuth=>{
+      // this.setState({currentUser: userAuth});
 
-      console.log(user);
-    })
+      if(userAuth){
+      const userRef = await createuserProfileDocument(userAuth);
+
+      ///Subscribe to changes on the snapshot
+      onSnapshot(userRef,(snapshot)=>{
+        
+        this.setState({
+          currentUser:{
+            id:snapshot.id,
+            ...snapshot.data()
+          }
+        },  //callback for setstate
+        ()=>{
+          console.log(this.state);
+        });
+
+       },(error)=>{
+         console.log("error occurred with Snapshot: "+error); 
+       }) 
+      
+       }  
+//set the state of the current user to userAuth which is null right now
+       this.setState({
+         currentUser:userAuth
+       });
+   
+    });
   }
 
   componentWillUnmount(){
