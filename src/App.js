@@ -39,9 +39,7 @@ class App extends React.Component {
             ...snapshot.data()
           }
         },  //callback for setstate
-        ()=>{
-          console.log(this.state);
-        });
+        );
 
        },(error)=>{
          console.log("error occurred with Snapshot: "+error); 
