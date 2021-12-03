@@ -1,6 +1,7 @@
 
 import React from 'react';
 import {Routes, Route } from 'react-router-dom';
+import { connect } from 'react-redux';
 import './App.css';
 import HomePage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component';
@@ -9,21 +10,20 @@ import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up
 import { auth,createuserProfileDocument } from './firebase/firebase.utils';
 import { onAuthStateChanged } from '@firebase/auth';
 import { onSnapshot } from 'firebase/firestore';
+import { setCurrentUser } from './redux/user/user.actions';
 
 
 
 
 class App extends React.Component {
-  constructor(){
-    super();
-
-    this.state= {
-      currentUser:null
-    }
-  }
+  
   unsubscribeFromAuth=null;
 
   componentDidMount(){
+    //destructure
+    const { setCurrentUser } = this.props;
+
+
    this.unsubscribeFromAuth= onAuthStateChanged(auth,async userAuth=>{
       // this.setState({currentUser: userAuth});
 
@@ -31,25 +31,16 @@ class App extends React.Component {
       const userRef = await createuserProfileDocument(userAuth);
 
       ///Subscribe to changes on the snapshot
-      onSnapshot(userRef,(snapshot)=>{
-        
-        this.setState({
-          currentUser:{
+      onSnapshot(userRef,(snapshot)=>{        
+        setCurrentUser({
             id:snapshot.id,
             ...snapshot.data()
-          }
-        },  //callback for setstate
-        );
-
-       },(error)=>{
-         console.log("error occurred with Snapshot: "+error); 
-       }) 
+          })
+       }); 
       
        }  
 //set the state of the current user to userAuth which is null right now
-       this.setState({
-         currentUser:userAuth
-       });
+      setCurrentUser(userAuth);
    
     });
   }
@@ -65,7 +56,7 @@ class App extends React.Component {
       <div >
         {//Give the current user state to the Header so the signout button knows
         }
-        <Header currentUser={ this.state.currentUser }/>
+        <Header />
        { /***********
         **VERSION 6  of react-router-dom uses Routes as the parent of Route
         and user element and not component
@@ -83,4 +74,8 @@ class App extends React.Component {
   
 }
 
-export default App;
+const matchDispatchToProps = dispatch =>({
+setCurrentUser: user => dispatch(setCurrentUser(user))
+});
+//pass in null as first arg because we do not need any state here
+export default connect(null, matchDispatchToProps)(App);
